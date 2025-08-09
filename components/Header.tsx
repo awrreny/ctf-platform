@@ -9,15 +9,25 @@ const links = [
 export default function Header() {
   return (
     <>
-      <Group justify="space-between" align="center" p="md">
-        <Group>
+      <Group justify="space-between" align="center" p={0}>
+        <Group gap={0}>
           {links.map((link) => (
-            <Button key={link.href} component={Link} href={link.href}>
+            <Button
+              key={link.href}
+              component={Link}
+              href={link.href}
+              variant="subtle"
+              radius={0}
+              size="lg"
+              c="dimmed"
+            >
               {link.label}
             </Button>
           ))}
         </Group>
-        <Button disabled>Login</Button>
+        <Button disabled variant="subtle" radius={0} size="lg" c="dimmed">
+          Login
+        </Button>
       </Group>
       <Divider mb="sm" />
       {/* TODO add alternate menu for mobile view */}
