@@ -3,15 +3,15 @@ import { ColorSchemeToggle } from '@/components/ColorSchemeToggle/ColorSchemeTog
 
 export default function HomePage() {
   return (
-    <Stack justify="center" align="center" mx="auto" w="50%" ta={'center'}>
-      <Title mt="sm">
+    <Stack justify="center" align="center" maw={1000} ta={'center'} mx="auto" px="xl">
+      <Title mt="sm" order={1}>
         Welcome to{' '}
         <Text span inherit variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
           u-win
         </Text>
         !
       </Title>
-      <Text c="dimmed" size="md">
+      <Text c="dimmed" size="md" mt={-15}>
         Unnamed Website thats Interesting and Nice
       </Text>
       <Text mt={30} size="lg">
