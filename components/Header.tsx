@@ -4,6 +4,7 @@ import { Button, Divider, Group, NavLink } from '@mantine/core';
 const links = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
+  { label: 'Challenges', href: '/challenges' },
 ];
 
 export default function Header() {
