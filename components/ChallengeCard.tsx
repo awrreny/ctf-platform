@@ -37,7 +37,7 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
               {challenge.difficulty}
             </Badge>
           </Group>
-          <Text size="sm" c="dimmed" lineClamp={2}>
+          <Text size="sm" c="dimmed" lineClamp={2} ta="left">
             {challenge.description}
           </Text>
           <Group justify="space-between" mt="auto">
