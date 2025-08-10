@@ -7,6 +7,8 @@ import { Challenge } from '@/types/challenge';
 
 interface ChallengeCardProps {
   challenge: Challenge;
+  onClick?: () => void;
+  isSolved?: boolean;
 }
 
 // ends up with default blue if not one of the keys
@@ -17,9 +19,20 @@ const difficultyColors = {
   Expert: 'red',
 };
 
-export default function ChallengeCard({ challenge }: ChallengeCardProps) {
+export default function ChallengeCard({
+  challenge,
+  onClick,
+  isSolved = false,
+}: ChallengeCardProps) {
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
+    <Card
+      shadow="sm"
+      padding="lg"
+      radius="md"
+      withBorder
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
+      onClick={onClick}
+    >
       <Card.Section p="md" withBorder>
         <Group>
           <Text fw={500} size="sm" tt="uppercase" c="dimmed">
@@ -45,10 +58,15 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
               <Text size="sm" fw={500} c="blue">
                 {challenge.points} pts
               </Text>
-              <Text size="xs" c="dimmed">
+              <Text size="sm" c="dimmed">
                 • {challenge.solves} solve{challenge.solves !== 1 ? 's' : ''}
               </Text>
             </Group>
+            {isSolved && (
+              <Badge color="green" variant="filled" size="sm">
+                Solved
+              </Badge>
+            )}
           </Group>
         </Stack>
       </Card.Section>
