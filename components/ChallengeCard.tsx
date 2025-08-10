@@ -3,42 +3,50 @@
 // Card.Section doesn't work in server components
 // careful with this as there is no helpful error message, just nextjs acting like it doesn't exist
 import { Badge, Card, Group, Stack, Text } from '@mantine/core';
+import { Challenge } from '@/types/challenge';
 
-export default function ChallengeCard() {
+interface ChallengeCardProps {
+  challenge: Challenge;
+}
+
+// ends up with default blue if not one of the keys
+const difficultyColors = {
+  Easy: 'green',
+  Medium: 'yellow',
+  Hard: 'orange',
+  Expert: 'red',
+};
+
+export default function ChallengeCard({ challenge }: ChallengeCardProps) {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section p="md" withBorder>
         <Group>
           <Text fw={500} size="sm" tt="uppercase" c="dimmed">
-            Category
+            {challenge.category}
           </Text>
         </Group>
       </Card.Section>
       <Card.Section p="md">
-        <Stack gap={8}>
+        <Stack gap="sm">
           <Group justify="space-between" align="center">
             <Text fw={600} size="lg">
-              Challenge Title
+              {challenge.title}
             </Text>
-            <Badge color="red" variant="light" size="sm">
-              Hard
+            <Badge color={difficultyColors[challenge.difficulty]} variant="light" size="sm">
+              {challenge.difficulty}
             </Badge>
           </Group>
           <Text size="sm" c="dimmed" lineClamp={2}>
-            This text tests the line clamp feature of Mantine. It should truncate after two lines.
-            Description Description Description Description Description Description Description
-            Description Description Description Description Description Description Description
-            Description Description Description Description Description Description Description
-            Description Description Description Description Description Description Description
-            Description Description Description Description
+            {challenge.description}
           </Text>
           <Group justify="space-between" mt="auto">
             <Group gap="xs">
               <Text size="sm" fw={500} c="blue">
-                100 pts
+                {challenge.points} pts
               </Text>
               <Text size="xs" c="dimmed">
-                • 2 solves
+                • {challenge.solves} solve{challenge.solves !== 1 ? 's' : ''}
               </Text>
             </Group>
           </Group>
