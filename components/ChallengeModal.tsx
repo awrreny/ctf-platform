@@ -85,29 +85,33 @@ export default function ChallengeModal({
       opened={opened}
       onClose={handleClose}
       title={
-        <Group justify="space-between" w="100%">
+        <Group align="baseline">
           <Text fw={600} size="lg">
             {challenge.title}
           </Text>
-          <Badge color={difficultyColors[challenge.difficulty]} variant="light">
-            {challenge.difficulty}
-          </Badge>
         </Group>
       }
       size="lg"
       centered
     >
       <Stack gap="md">
-        <Group>
-          <Text size="sm" fw={500} tt="uppercase" c="dimmed">
-            {challenge.category}
-          </Text>
-          <Text size="sm" fw={500} c="blue">
-            {challenge.points} points
-          </Text>
-          <Text size="sm" c="dimmed">
-            {challenge.solves} solve{challenge.solves !== 1 ? 's' : ''}
-          </Text>
+        <Group justify="space-between" align="center">
+          <Group align="center" gap="0.2rem">
+            <Text size="sm" c="dimmed">
+              {challenge.category} •
+            </Text>
+            <Text size="sm" c="blue">
+              {challenge.points} points
+            </Text>
+            <Text size="sm" c="dimmed">
+              • {challenge.solves} solve{challenge.solves !== 1 ? 's' : ''}
+            </Text>
+          </Group>
+          <Group align="center">
+            <Badge color={difficultyColors[challenge.difficulty]} variant="light">
+              {challenge.difficulty}
+            </Badge>
+          </Group>
         </Group>
 
         <Divider />
@@ -125,15 +129,11 @@ export default function ChallengeModal({
             <Divider />
 
             <Stack gap="sm">
-              <Text size="sm" fw={500}>
-                Submit Flag:
-              </Text>
-
               <TextInput
                 placeholder="flag{...}"
                 value={flag}
                 onChange={(event) => setFlag(event.currentTarget.value)}
-                onKeyPress={(event) => {
+                onKeyDown={(event) => {
                   if (event.key === 'Enter') {
                     handleSubmit();
                   }

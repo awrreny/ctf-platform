@@ -54,7 +54,7 @@ export default function ChallengeCard({
             {challenge.description}
           </Text>
           <Group justify="space-between" mt="auto">
-            <Group gap="xs">
+            <Group gap="0.2rem">
               <Text size="sm" fw={500} c="blue">
                 {challenge.points} pts
               </Text>
