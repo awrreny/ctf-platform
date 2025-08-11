@@ -20,7 +20,7 @@ interface ChallengeModalProps {
   opened: boolean;
   onClose: () => void;
   isSolved?: boolean;
-  onSolve?: (challengeId: string, flag: string) => void;
+  onSolve?: (challengeId: number, flag: string) => void;
 }
 
 // ends up with default blue if not one of the keys

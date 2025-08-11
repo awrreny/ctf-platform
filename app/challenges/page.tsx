@@ -10,7 +10,7 @@ import { Challenge } from '@/types/challenge';
 // ai-generated challenges for demonstration purposes
 const challenges: Challenge[] = [
   {
-    id: 'crypto-001',
+    id: 1,
     category: 'crypto',
     title: 'Caesar Cipher Basics',
     description:
@@ -20,7 +20,7 @@ const challenges: Challenge[] = [
     solves: 47,
   },
   {
-    id: 'crypto-002',
+    id: 2,
     category: 'crypto',
     title: 'RSA Factorization',
     description:
@@ -30,7 +30,7 @@ const challenges: Challenge[] = [
     solves: 23,
   },
   {
-    id: 'rev-001',
+    id: 3,
     category: 'rev',
     title: 'Simple Crackme',
     description:
@@ -40,7 +40,7 @@ const challenges: Challenge[] = [
     solves: 31,
   },
   {
-    id: 'crypto-003',
+    id: 4,
     category: 'crypto',
     title: 'Stream Cipher Attack',
     description:
@@ -50,7 +50,7 @@ const challenges: Challenge[] = [
     solves: 8,
   },
   {
-    id: 'rev-002',
+    id: 5,
     category: 'rev',
     title: 'Obfuscated Binary',
     description:
@@ -64,7 +64,7 @@ const challenges: Challenge[] = [
 export default function ChallengesPage() {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [modalOpened, setModalOpened] = useState(false);
-  const [solvedChallenges, setSolvedChallenges] = useState<Set<string>>(new Set());
+  const [solvedChallenges, setSolvedChallenges] = useState<Set<number>>(new Set());
 
   // Load solved challenges from localStorage on component mount
   useEffect(() => {
@@ -94,7 +94,7 @@ export default function ChallengesPage() {
     setSelectedChallenge(null);
   };
 
-  const handleChallengeSolve = (challengeId: string, flag: string) => {
+  const handleChallengeSolve = (challengeId: number, flag: string) => {
     setSolvedChallenges(prev => new Set(prev).add(challengeId));
   };
 

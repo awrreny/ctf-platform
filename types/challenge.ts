@@ -1,5 +1,5 @@
 export type Challenge = {
-  id: string;
+  id: number;
   category: string;
   title: string;
   difficulty: 'Easy' | 'Medium' | 'Hard' | 'Expert';
