@@ -5,12 +5,11 @@ import { Alert, Loader, Stack, Text, Title } from '@mantine/core';
 import ChallengeCard from '@/components/ChallengeCard';
 import ChallengeListView from '@/components/ChallengeListView';
 import ChallengeModal from '@/components/ChallengeModal';
+import { useChallenges } from '@/hooks/useChallenges';
 import { Challenge } from '@/types/challenge';
 
 export default function ChallengesPage() {
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { challenges, loading, error } = useChallenges();
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [modalOpened, setModalOpened] = useState(false);
   const [solvedChallenges, setSolvedChallenges] = useState<Set<number>>(new Set());
@@ -26,32 +25,6 @@ export default function ChallengesPage() {
         console.error('Failed to parse solved challenges from localStorage:', error);
       }
     }
-  }, []);
-
-  // Fetch challenges from API
-  useEffect(() => {
-    const fetchChallenges = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await fetch('/api/challenges');
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch challenges: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setChallenges(data.challenges);
-      } catch (err) {
-        console.error('Error fetching challenges:', err);
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchChallenges();
   }, []);
 
   // Save solved challenges to localStorage whenever it changes
