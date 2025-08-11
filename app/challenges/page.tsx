@@ -1,67 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Stack, Text, Title } from '@mantine/core';
+import { useEffect, useState } from 'react';
+import { Alert, Loader, Stack, Text, Title } from '@mantine/core';
 import ChallengeCard from '@/components/ChallengeCard';
 import ChallengeListView from '@/components/ChallengeListView';
 import ChallengeModal from '@/components/ChallengeModal';
 import { Challenge } from '@/types/challenge';
 
-// ai-generated challenges for demonstration purposes
-const challenges: Challenge[] = [
-  {
-    id: 1,
-    category: 'crypto',
-    title: 'Caesar Cipher Basics',
-    description:
-      'A simple substitution cipher awaits your decryption skills. This challenge will introduce you to classical cryptography and basic frequency analysis techniques.',
-    points: 50,
-    difficulty: 'Easy',
-    solves: 47,
-  },
-  {
-    id: 2,
-    category: 'crypto',
-    title: 'RSA Factorization',
-    description:
-      'Factor this small RSA modulus to recover the private key. Understanding the mathematical foundations of RSA will be key to solving this challenge.',
-    points: 150,
-    difficulty: 'Medium',
-    solves: 23,
-  },
-  {
-    id: 3,
-    category: 'rev',
-    title: 'Simple Crackme',
-    description:
-      'Reverse engineer this binary to find the correct password. Basic static analysis skills and understanding of assembly will help.',
-    points: 100,
-    difficulty: 'Easy',
-    solves: 31,
-  },
-  {
-    id: 4,
-    category: 'crypto',
-    title: 'Stream Cipher Attack',
-    description:
-      'Exploit a weak stream cipher implementation. This challenge focuses on cryptanalysis of XOR-based encryption schemes.',
-    points: 300,
-    difficulty: 'Hard',
-    solves: 8,
-  },
-  {
-    id: 5,
-    category: 'rev',
-    title: 'Obfuscated Binary',
-    description:
-      'Navigate through anti-debugging and obfuscation techniques. Advanced reverse engineering skills and dynamic analysis will be required.',
-    points: 400,
-    difficulty: 'Expert',
-    solves: 3,
-  },
-];
-
 export default function ChallengesPage() {
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [modalOpened, setModalOpened] = useState(false);
   const [solvedChallenges, setSolvedChallenges] = useState<Set<number>>(new Set());
@@ -77,6 +26,32 @@ export default function ChallengesPage() {
         console.error('Failed to parse solved challenges from localStorage:', error);
       }
     }
+  }, []);
+
+  // Fetch challenges from API
+  useEffect(() => {
+    const fetchChallenges = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch('/api/challenges');
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch challenges: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setChallenges(data.challenges);
+      } catch (err) {
+        console.error('Error fetching challenges:', err);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChallenges();
   }, []);
 
   // Save solved challenges to localStorage whenever it changes
@@ -95,7 +70,7 @@ export default function ChallengesPage() {
   };
 
   const handleChallengeSolve = (challengeId: number, flag: string) => {
-    setSolvedChallenges(prev => new Set(prev).add(challengeId));
+    setSolvedChallenges((prev) => new Set(prev).add(challengeId));
   };
 
   return (
@@ -106,11 +81,23 @@ export default function ChallengesPage() {
       <Text mt="xl" size="lg">
         Challenge List
       </Text>
-      <ChallengeListView 
-        challenges={challenges} 
-        onChallengeClick={handleChallengeClick}
-        solvedChallenges={solvedChallenges}
-      />
+
+      {loading && <Loader size="lg" />}
+
+      {error && (
+        <Alert variant="light" color="red" title="Error loading challenges">
+          {error}
+        </Alert>
+      )}
+
+      {!loading && !error && (
+        <ChallengeListView
+          challenges={challenges}
+          onChallengeClick={handleChallengeClick}
+          solvedChallenges={solvedChallenges}
+        />
+      )}
+
       <ChallengeModal
         challenge={selectedChallenge}
         opened={modalOpened}
