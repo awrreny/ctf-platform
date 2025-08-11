@@ -13,6 +13,7 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
+import { useFlagValidation } from '@/hooks/useFlagValidation';
 import { Challenge } from '@/types/challenge';
 
 interface ChallengeModalProps {
@@ -39,42 +40,20 @@ export default function ChallengeModal({
   onSolve,
 }: ChallengeModalProps) {
   const [flag, setFlag] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState<{
-    type: 'success' | 'error';
-    text: string;
-  } | null>(null);
+  const { isSubmitting, submitMessage, validateFlag, clearMessage } = useFlagValidation();
 
   const handleSubmit = async () => {
     if (!challenge || !flag.trim()) return;
 
-    setIsSubmitting(true);
-    setSubmitMessage(null);
-
-    try {
-      // Simulate flag validation - in real implementation, this would be an API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // For demo purposes, consider flags starting with "flag{" as correct
-      const isCorrect = flag.toLowerCase().startsWith('flag{');
-
-      if (isCorrect) {
-        setSubmitMessage({ type: 'success', text: 'Correct! Challenge solved!' });
-        onSolve?.(challenge.id, flag);
-        setFlag('');
-      } else {
-        setSubmitMessage({ type: 'error', text: 'Incorrect flag. Try again!' });
-      }
-    } catch (error) {
-      setSubmitMessage({ type: 'error', text: 'An error occurred. Please try again.' });
-    } finally {
-      setIsSubmitting(false);
+    const isCorrect = await validateFlag(challenge, flag, onSolve);
+    if (isCorrect) {
+      setFlag('');
     }
   };
 
   const handleClose = () => {
     setFlag('');
-    setSubmitMessage(null);
+    clearMessage();
     onClose();
   };
 
