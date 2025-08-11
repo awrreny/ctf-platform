@@ -131,3 +131,5 @@ dist
 
 .DS_Store
 /generated/prisma
+prisma/chal-seed-data.json
+prisma/dev.db

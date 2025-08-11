@@ -10,3 +10,14 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Challenge {
+  id          Int        @id @default(autoincrement())
+  category    String
+  title       String
+  difficulty  String
+  description String
+  points      Int
+  solves      Int
+  flagHash    String
+}
