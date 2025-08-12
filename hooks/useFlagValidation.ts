@@ -15,15 +15,24 @@ export function useFlagValidation() {
     flag: string,
     onSolve?: (challengeId: number, flag: string) => void
   ) => {
-    if (!challenge || !flag.trim()) return;
+    if (!challenge || !flag.trim()) return false;
 
     setIsSubmitting(true);
     setSubmitMessage(null);
 
     try {
-      // Simulate flag validation - in real implementation, this would be an API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const isCorrect = flag.toLowerCase().startsWith('flag{');
+      const response = await fetch('/api/flags/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ flag, challengeId: challenge.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const { isCorrect: isCorrect } = await response.json();
 
       if (isCorrect) {
         setSubmitMessage({ type: 'success', text: 'Correct! Challenge solved!' });
