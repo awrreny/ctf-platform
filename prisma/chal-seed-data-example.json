@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Example Challenge",
+    "category": "misc",
+    "description": "The flag is flag{example_challenge_1}. Edit chal-seed-data.json to add your own challenges.",
+    "points": 1,
+    "difficulty": "Easy",
+    "solves": 1337,
+    "flag": "flag{example_challenge_1}"
+  },
+  {
+    "title": "Example Challenge Revenge",
+    "category": "osint",
+    "description": "What does the OS in OSINT stand for?",
+    "points": 1337,
+    "difficulty": "Expert",
+    "solves": 1,
+    "flag": "flag{dont_publish_your_flags_in_public_repositories}"
+  }
+]

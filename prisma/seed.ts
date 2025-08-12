@@ -43,7 +43,7 @@ async function main() {
         category: 'misc',
         difficulty: 'Easy',
         description:
-          'Placeholder challenge. The flag is flag{example_flag_12345}. Place challenges in chal-seed-data.json as a json array. (search this text in prisma/seed.ts for example)',
+          'The flag is flag{example_flag_12345}. This is a placeholder challenge: prisma/chal-seed-data.json was not found. Try copying prisma/chal-seed-data-example.json to prisma/chal-seed-data.json and editing it to add your own challenges.',
         points: 1,
         solves: 1337,
         flagHash: hashFlag('flag{example_flag_12345}'),

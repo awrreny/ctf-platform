@@ -1,37 +1,43 @@
-# Mantine Next.js template
+# CTF platform
 
-This is a template for [Next.js](https://nextjs.org/) app router + [Mantine](https://mantine.dev/).
-If you want to use pages router instead, see [next-pages-template](https://github.com/mantinedev/next-pages-template).
+Website for hosting my CTF challenges.
+WIP, no live server yet
+Uses Next.js with Mantine UI and Prisma ORM (currently with SQLite)
+Generated from [Next.js + Mantine template](https://github.com/mantinedev/next-app-template)
 
-## Features
+---
 
-This template comes with the following features:
+## Local Development Setup
 
-- [PostCSS](https://postcss.org/) with [mantine-postcss-preset](https://mantine.dev/styles/postcss-preset)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Storybook](https://storybook.js.org/)
-- [Jest](https://jestjs.io/) setup with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
-- ESLint setup with [eslint-config-mantine](https://github.com/mantinedev/eslint-config-mantine)
+> **Note:** These steps are **only for developers cloning this repo**.
+> You do **not** need to do this to use the deployed site.
 
-## npm scripts
+### Prerequisites
 
-### Build and dev scripts
+- **Node.js**
+- **Yarn** package manager
+- **Git**
 
-- `dev` – start dev server
-- `build` – bundle application for production
-- `analyze` – analyzes application bundle with [@next/bundle-analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)
+### Installation
 
-### Testing scripts
+```bash
+# 1. Clone the repo
+git clone https://github.com/awrreny/ctf-platform.git
+cd ctf-platform
 
-- `typecheck` – checks TypeScript types
-- `lint` – runs ESLint
-- `prettier:check` – checks files with Prettier
-- `jest` – runs jest tests
-- `jest:watch` – starts jest watch
-- `test` – runs `jest`, `prettier:check`, `lint` and `typecheck` scripts
+# 2. Install dependencies
+yarn
 
-### Other scripts
+# 3. Create environment file
+cp .env.example .env
 
-- `storybook` – starts storybook dev server
-- `storybook:build` – build production storybook bundle to `storybook-static`
-- `prettier:write` – formats all files with Prettier
+# 4. (Optional, to add your own challenges)
+cp prisma/chal-seed-data-example.json prisma/chal-seed-data-example.json
+
+# 5. Initialise database (make sure you are still in ctf-platform/)
+yarn prisma migrate dev
+yarn prisma db seed
+
+# 7. Run the development server
+yarn dev
+```
