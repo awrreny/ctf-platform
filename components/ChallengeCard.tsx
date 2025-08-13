@@ -40,34 +40,38 @@ export default function ChallengeCard({
           </Text>
         </Group>
       </Card.Section>
-      <Card.Section p="md">
-        <Stack gap="sm">
-          <Group justify="space-between" align="center">
-            <Text fw={600} size="lg">
-              {challenge.title}
-            </Text>
-            <Badge color={difficultyColors[challenge.difficulty]} variant="light" size="sm">
-              {challenge.difficulty}
-            </Badge>
-          </Group>
-          <Text size="sm" c="dimmed" lineClamp={2} ta="left">
-            {challenge.description}
-          </Text>
-          <Group justify="space-between" mt="auto">
-            <Group gap="0.2rem">
-              <Text size="sm" fw={500} c="blue">
-                {challenge.points} pts
+      <Card.Section p="md" style={{ flexGrow: 1 }}>
+        <Stack justify="space-between" h="100%">
+          <Stack gap="sm">
+            <Group justify="space-between" align="center">
+              <Text fw={600} size="lg">
+                {challenge.title}
               </Text>
-              <Text size="sm" c="dimmed">
-                • {challenge.solves} solve{challenge.solves !== 1 ? 's' : ''}
-              </Text>
-            </Group>
-            {isSolved && (
-              <Badge color="green" variant="filled" size="sm">
-                Solved
+              <Badge color={difficultyColors[challenge.difficulty]} variant="light" size="sm">
+                {challenge.difficulty}
               </Badge>
-            )}
-          </Group>
+            </Group>
+            <Text size="sm" c="dimmed" lineClamp={2} ta="left">
+              {challenge.description}
+            </Text>
+          </Stack>
+          <Stack>
+            <Group justify="space-between" mt="auto">
+              <Group gap="0.2rem">
+                <Text size="sm" fw={500} c="blue">
+                  {challenge.points} pts
+                </Text>
+                <Text size="sm" c="dimmed">
+                  • {challenge.solves} solve{challenge.solves !== 1 ? 's' : ''}
+                </Text>
+              </Group>
+              {isSolved && (
+                <Badge color="green" variant="filled" size="sm">
+                  Solved
+                </Badge>
+              )}
+            </Group>
+          </Stack>
         </Stack>
       </Card.Section>
     </Card>
