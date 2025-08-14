@@ -20,7 +20,7 @@ async function main() {
       const fileContent = fs.readFileSync(dataFilePath, 'utf-8');
       const challengesFromFile = JSON.parse(fileContent);
 
-      // Transform the data: hash flags
+      // Transform the data: hash flags and initialise attachments array
       challenges = challengesFromFile.map((challenge: any) => ({
         title: challenge.title,
         category: challenge.category,
@@ -29,6 +29,7 @@ async function main() {
         points: challenge.points,
         solves: challenge.solves,
         flagHash: hashFlag(challenge.flag),
+        attachments: challenge.attachments || [],
       }));
     } catch (error) {
       console.error('Error reading chal-seed-data.json:', error);
@@ -47,20 +48,37 @@ async function main() {
         points: 1,
         solves: 1337,
         flagHash: hashFlag('flag{example_flag_12345}'),
+        attachments: [],
       },
     ];
   }
 
-  // Clear existing challenges
-  console.log('Clearing existing challenges...');
+  // Clear existing data
+  console.log('Clearing existing challenges and attachments...');
+  await prisma.attachment.deleteMany();
   await prisma.challenge.deleteMany();
 
   // Seed the database
   console.log(`Seeding ${challenges.length} challenge(s)...`);
   for (const challenge of challenges) {
-    await prisma.challenge.create({
-      data: challenge,
+    const { attachments, ...challengeData } = challenge;
+    
+    const createdChallenge = await prisma.challenge.create({
+      data: challengeData,
     });
+
+    // Create attachments for this challenge
+    if (attachments && attachments.length > 0) {
+      console.log(`Creating ${attachments.length} attachment(s) for challenge "${challenge.title}"...`);
+      for (const attachmentUrl of attachments) {
+        await prisma.attachment.create({
+          data: {
+            url: attachmentUrl,
+            challengeId: createdChallenge.id,
+          },
+        });
+      }
+    }
   }
 
   console.log('Database seeded successfully!');
