@@ -18,6 +18,7 @@ export async function GET() {
         description: true,
         points: true,
         solves: true,
+        attachments: { select: { url: true } },
         // flagHash: false - explicitly exclude sensitive data
       },
       // TODO replace with user-defined filters when ready
@@ -31,6 +32,7 @@ export async function GET() {
     const challenges: Challenge[] = rawChallenges.map((challenge) => ({
       ...challenge,
       difficulty: challenge.difficulty as Challenge['difficulty'],
+      attachments: challenge.attachments.map((attachment) => attachment.url),
     }));
 
     return NextResponse.json({ challenges });

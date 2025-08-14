@@ -6,4 +6,5 @@ export type Challenge = {
   description: string;
   points: number;
   solves: number;
+  attachments: string[];
 };

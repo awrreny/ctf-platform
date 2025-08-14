@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { IconDownload, IconExternalLink } from '@tabler/icons-react';
 import {
   Alert,
   Badge,
   Button,
+  Card,
   Divider,
   Group,
   Modal,
@@ -13,6 +15,7 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
+import { CHALLENGE_ATTACHMENT_DIR } from '@/config/constants';
 import { useFlagValidation } from '@/hooks/useFlagValidation';
 import { Challenge } from '@/types/challenge';
 
@@ -98,6 +101,37 @@ export default function ChallengeModal({
         <Text size="md" style={{ lineHeight: 1.6 }}>
           {challenge.description}
         </Text>
+
+        {challenge.attachments && challenge.attachments.length > 0 && (
+          <>
+            <Divider />
+            <Stack gap="xs">
+              {challenge.attachments.map((attachment) => (
+                <Card key={attachment} p="sm">
+                  <Group justify="space-between" align="center">
+                    <Group>
+                      <IconDownload size={16} />
+                      <Text size="sm" c="dimmed">
+                        {attachment.split('/').pop()}
+                      </Text>
+                    </Group>
+                    <Button
+                      variant="light"
+                      color="blue"
+                      size="xs"
+                      component="a"
+                      href={`${CHALLENGE_ATTACHMENT_DIR}/${attachment}`}
+                      download
+                      rightSection={<IconExternalLink size={12} />}
+                    >
+                      Download
+                    </Button>
+                  </Group>
+                </Card>
+              ))}
+            </Stack>
+          </>
+        )}
 
         {isSolved ? (
           <Alert color="green" title="Challenge Solved!">
