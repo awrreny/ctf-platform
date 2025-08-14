@@ -133,3 +133,5 @@ dist
 /generated/prisma
 prisma/chal-seed-data.json
 prisma/dev.db
+
+/public/nocommit/
