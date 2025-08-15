@@ -72,7 +72,10 @@ export async function GET(req: NextRequest) {
       attachments: challenge.attachments.map((attachment) => attachment.url),
     }));
 
-    return NextResponse.json({ challenges });
+    // including all pages, but not including filtered out challenges
+    const totalChallengeCount = await prisma.challenge.count();
+
+    return NextResponse.json({ challenges, totalChallengeCount });
   } catch (error) {
     console.error('Error fetching challenges:', error);
     return NextResponse.json({ error: 'Failed to fetch challenges' }, { status: 500 });

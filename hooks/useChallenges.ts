@@ -8,6 +8,7 @@ interface UseChallengesParams {
 
 export function useChallenges({ page = 1, pageSize = 18 }: UseChallengesParams = {}) {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,6 +24,7 @@ export function useChallenges({ page = 1, pageSize = 18 }: UseChallengesParams =
 
       const data = await response.json();
       setChallenges(data.challenges);
+      setTotal(data.totalChallengeCount);
     } catch (err) {
       console.error('Error fetching challenges:', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -39,5 +41,6 @@ export function useChallenges({ page = 1, pageSize = 18 }: UseChallengesParams =
     challenges,
     loading,
     error,
+    challengeCount: total,
   };
 }

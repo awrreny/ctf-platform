@@ -1,22 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Alert, Loader, Pagination, Stack, Text, Title } from '@mantine/core';
-import ChallengeCard from '@/components/ChallengeCard';
+import { Alert, Loader, Pagination, Stack, Title } from '@mantine/core';
 import ChallengeListView from '@/components/ChallengeListView';
 import ChallengeModal from '@/components/ChallengeModal';
 import { useChallenges } from '@/hooks/useChallenges';
 import { Challenge } from '@/types/challenge';
 
 export default function ChallengesPage() {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(18);
-  const { challenges, loading, error } = useChallenges({ page, pageSize });
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(18);
+  const { challenges, loading, error, challengeCount } = useChallenges({ page, pageSize });
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
-  const [modalOpened, setModalOpened] = useState(false);
+  const [modalOpened, setModalOpened] = useState<boolean>(false);
   const [solvedChallenges, setSolvedChallenges] = useState<Set<number>>(new Set());
 
-  const pageCount = 2; // todo get hook
+  const pageCount = Math.ceil(challengeCount / pageSize);
 
   // Load solved challenges from localStorage on component mount
   useEffect(() => {
