@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Challenge } from '@/types/challenge';
 
-export function useChallenges() {
+interface UseChallengesParams {
+  page?: number;
+  pageSize?: number;
+}
+
+export function useChallenges({ page = 1, pageSize = 18 }: UseChallengesParams = {}) {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -11,7 +16,7 @@ export function useChallenges() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/challenges');
+      const response = await fetch(`/api/challenges?page=${page}&pageSize=${pageSize}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch challenges: ${response.status}`);
       }
@@ -28,7 +33,7 @@ export function useChallenges() {
 
   useEffect(() => {
     fetchChallenges();
-  }, []);
+  }, [page, pageSize]);
 
   return {
     challenges,
