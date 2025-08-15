@@ -9,9 +9,17 @@ const schema = z.object({
   challengeId: z.int().positive(),
 });
 
-// TODO singleton
-const prisma = new PrismaClient();
-// TODO maybe cache as well
+// use singleton if in development
+// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/nextjs-help#recommended-solution
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+
+// TODO research caching
 
 export async function POST(req: NextRequest) {
   let body;
