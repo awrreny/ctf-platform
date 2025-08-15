@@ -98,7 +98,7 @@ export default function ChallengeModal({
 
         <Divider />
 
-        <Text size="md" style={{ lineHeight: 1.6 }}>
+        <Text size="md" style={{ lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
           {challenge.description}
         </Text>
 
