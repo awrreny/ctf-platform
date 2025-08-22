@@ -30,7 +30,10 @@ export async function POST(req: NextRequest) {
   }
   const result = schema.safeParse(body);
   if (!result.success) {
-    return NextResponse.json({ error: 'Invalid input format' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Invalid input format', details: result.error.issues },
+      { status: 400 }
+    );
   }
 
   const { flag, challengeId } = result.data;
