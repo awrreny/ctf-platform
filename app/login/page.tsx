@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { IconAlertCircle } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import {
   Alert,
@@ -76,7 +75,6 @@ export default function LoginPage() {
         title: 'Login Failed',
         message: errorMessage,
         color: 'red',
-        icon: <IconAlertCircle size={16} />,
       });
     } finally {
       setLoading(false);
@@ -94,7 +92,7 @@ export default function LoginPage() {
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         {error && (
-          <Alert icon={<IconAlertCircle size={16} />} title="Login Failed" color="red" mb="md">
+          <Alert title="Login Failed" color="red" mb="md">
             {error}
           </Alert>
         )}

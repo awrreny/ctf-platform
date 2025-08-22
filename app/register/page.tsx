@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { IconAlertCircle, IconCheck } from '@tabler/icons-react';
+import { IconCheck } from '@tabler/icons-react';
 import {
   Alert,
   Anchor,
@@ -99,7 +99,6 @@ export default function RegisterPage() {
         title: 'Error',
         message: errorMessage,
         color: 'red',
-        icon: <IconAlertCircle size={16} />,
       });
     } finally {
       setLoading(false);
@@ -118,12 +117,7 @@ export default function RegisterPage() {
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         {error && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            title="Registration Failed"
-            color="red"
-            mb="md"
-          >
+          <Alert title="Registration Failed" color="red" mb="md">
             {error}
           </Alert>
         )}
