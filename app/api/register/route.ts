@@ -48,9 +48,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // not converted from hex because original bytes are not utf-8
+  const pepper = process.env.PEPPER_HEX;
+  if (!pepper) {
+    throw new Error('Pepper env variable not found');
+  }
+
   let hashedPassword;
   try {
-    hashedPassword = await argon2.hash(password);
+    hashedPassword = await argon2.hash(password + pepper);
   } catch (err) {
     console.error('Error hashing password:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

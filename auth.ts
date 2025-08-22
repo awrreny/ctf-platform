@@ -46,8 +46,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null;
           }
 
+          // not converted from hex because original bytes are not utf-8
+          const pepper = process.env.PEPPER_HEX;
+          if (!pepper) {
+            throw new Error('Pepper env variable not found');
+          }
+
           // Verify password
-          const isMatch = await argon2.verify(user.passwordHash, password);
+          const isMatch = await argon2.verify(user.passwordHash, password + pepper);
           if (!isMatch) {
             return null;
           }
