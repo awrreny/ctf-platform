@@ -26,8 +26,8 @@ export default function Header() {
             </Button>
           ))}
         </Group>
-        <Button disabled variant="subtle" radius={0} size="lg" c="dimmed">
-          Login
+        <Button component={Link} href="/login" variant="subtle" radius={0} size="lg" c="dimmed">
+          Log in
         </Button>
       </Group>
       <Divider mb="sm" />

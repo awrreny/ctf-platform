@@ -65,6 +65,7 @@ export default function LoginPage() {
           message: 'You have been logged in successfully.',
           color: 'green',
         });
+        // TODO use callback URLs with sanitization and validation, and make it work for /register as well
         router.push(callbackUrl);
         router.refresh();
       }
@@ -85,7 +86,7 @@ export default function LoginPage() {
   return (
     <Container size={420} my={40}>
       <Title ta="center" mb="md">
-        Sign In
+        Log In
       </Title>
       <Text c="dimmed" size="sm" ta="center" mb="xl">
         Welcome back
@@ -115,7 +116,7 @@ export default function LoginPage() {
             />
 
             <Button type="submit" loading={loading} fullWidth mt="md">
-              Sign In
+              Log In
             </Button>
           </Stack>
         </form>
