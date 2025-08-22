@@ -1,0 +1,81 @@
+import { NextRequest, NextResponse } from 'next/server';
+import argon2 from 'argon2';
+import { z } from 'zod';
+import { PrismaClient } from '@/generated/prisma';
+
+// use singleton if in development
+// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/nextjs-help#recommended-solution
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+
+const registerSchema = z.object({
+  username: z.string().min(2).max(100),
+  email: z.email().optional(),
+  password: z.string().min(8).max(100),
+});
+
+export async function POST(request: NextRequest) {
+  let body;
+  try {
+    body = await request.json();
+  } catch (error) {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
+  const result = registerSchema.safeParse(body);
+  if (!result.success) {
+    return NextResponse.json(
+      { error: 'Invalid input format', details: result.error.issues },
+      { status: 400 }
+    );
+  }
+
+  const { username, email, password } = result.data;
+
+  const alreadyExists = await prisma.user.findFirst({
+    where: {
+      OR: [{ username }, ...(email ? [{ email }] : [])],
+    },
+  });
+  if (alreadyExists) {
+    return NextResponse.json(
+      { error: 'User with this username or email already exists' },
+      { status: 409 }
+    );
+  }
+
+  let hashedPassword;
+  try {
+    hashedPassword = await argon2.hash(password);
+  } catch (err) {
+    console.error('Error hashing password:', err);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+
+  let user;
+  try {
+    user = await prisma.user.create({
+      data: {
+        username,
+        ...(email && { email }),
+        passwordHash: hashedPassword,
+      },
+    });
+  } catch (err) {
+    console.error('Error creating user:', err);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+
+  return NextResponse.json({
+    message: 'User created successfully',
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    },
+  });
+}

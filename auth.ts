@@ -2,9 +2,20 @@ import argon2 from 'argon2';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
+import { PrismaClient } from '@/generated/prisma';
+
+// use singleton if in development
+// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/nextjs-help#recommended-solution
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
 
 const authSchema = z.object({
-  username: z.string().min(2).max(100),
+  username: z.string().min(2).max(100), // Can be username or email
   password: z.string().min(8).max(100),
 });
 
@@ -13,7 +24,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text' },
+        identifier: { label: 'Username or Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentialsUnsafe) => {
@@ -21,31 +32,51 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!result.success) {
           return null;
         }
-        const credentials = result.data;
+        const { username: identifier, password } = result.data;
 
         try {
-          const hashedPassword = await argon2.hash(credentials.password);
-        } catch (error) {
-          console.error('Error hashing password:', error);
-          return null;
-        }
+          // Find user in database by username or email
+          const user = await prisma.user.findFirst({
+            where: {
+              OR: [{ username: identifier }, { email: identifier }],
+            },
+          });
 
-        // later get hash from db
-        const storedHash = await argon2.hash('test_password');
+          if (!user) {
+            return null;
+          }
 
-        try {
-          const isMatch = await argon2.verify(storedHash, credentials.password);
+          // Verify password
+          const isMatch = await argon2.verify(user.passwordHash, password);
           if (!isMatch) {
             return null;
           }
+
+          // Return user object (NextAuth will handle the session)
+          return {
+            id: user.id.toString(),
+            name: user.username,
+            email: user.email,
+          };
         } catch (error) {
           console.error('Error verifying password:', error);
           return null;
         }
-
-        // later get user from db
-        return { name: 'Test User' };
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token.id) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
+  },
 });
