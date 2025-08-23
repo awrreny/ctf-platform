@@ -1,23 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto, { timingSafeEqual } from 'crypto';
 import { z } from 'zod';
+import { auth } from '@/auth';
 import { MAX_FLAG_LENGTH } from '@/config/constants';
-import { PrismaClient } from '@/generated/prisma';
+import { prisma } from '@/lib/prisma';
 
 const schema = z.object({
   flag: z.string().min(1).max(MAX_FLAG_LENGTH),
   challengeId: z.int().positive(),
 });
-
-// use singleton if in development
-// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/nextjs-help#recommended-solution
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-export const prisma = globalForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
 
 // TODO research caching
 
@@ -28,6 +19,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
+
   const result = schema.safeParse(body);
   if (!result.success) {
     return NextResponse.json(
@@ -37,6 +29,24 @@ export async function POST(req: NextRequest) {
   }
 
   const { flag, challengeId } = result.data;
+
+  // Get current session to check if user is logged in
+  const session = await auth();
+  let userId: number | null = null;
+
+  if (session?.user?.name) {
+    // Get user ID from username
+    try {
+      const user = await prisma.user.findUnique({
+        where: { username: session.user.name },
+        select: { id: true },
+      });
+      userId = user?.id ?? null;
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      // Continue without user ID if there's an error
+    }
+  }
 
   const flagHash = crypto.createHash('sha256').update(flag).digest('hex');
 
@@ -60,5 +70,22 @@ export async function POST(req: NextRequest) {
 
   // no length check needed as hashes are always the same length
   const isValid = timingSafeEqual(providedFlagHash, storedFlagHash);
+
+  if (userId) {
+    try {
+      await prisma.submission.create({
+        data: {
+          userId,
+          challengeId,
+          flag,
+          isCorrect: isValid,
+        },
+      });
+    } catch (error) {
+      console.error('Error saving submission:', error);
+      // still return flag validation result even if saving fails
+    }
+  }
+
   return NextResponse.json({ isCorrect: isValid });
 }
