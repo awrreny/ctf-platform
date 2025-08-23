@@ -14,7 +14,6 @@ interface ChallengeListViewProps {
 export default function ChallengeListView({
   challenges,
   onChallengeClick,
-  solvedChallenges = new Set(),
 }: ChallengeListViewProps) {
   return (
     <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
@@ -23,7 +22,6 @@ export default function ChallengeListView({
           key={challenge.id}
           challenge={challenge}
           onClick={() => onChallengeClick?.(challenge)}
-          isSolved={solvedChallenges.has(challenge.id)}
         />
       ))}
     </SimpleGrid>

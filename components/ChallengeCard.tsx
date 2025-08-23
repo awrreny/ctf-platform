@@ -19,11 +19,7 @@ const difficultyColors = {
   Expert: 'red',
 };
 
-export default function ChallengeCard({
-  challenge,
-  onClick,
-  isSolved = false,
-}: ChallengeCardProps) {
+export default function ChallengeCard({ challenge, onClick }: ChallengeCardProps) {
   return (
     <Card
       shadow="sm"
@@ -65,7 +61,7 @@ export default function ChallengeCard({
                   • {challenge.solves} solve{challenge.solves !== 1 ? 's' : ''}
                 </Text>
               </Group>
-              {isSolved && (
+              {challenge.solved && (
                 <Badge color="green" variant="filled" size="sm">
                   Solved
                 </Badge>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Alert, Loader, Pagination, Stack, Title } from '@mantine/core';
 import ChallengeListView from '@/components/ChallengeListView';
 import ChallengeModal from '@/components/ChallengeModal';
@@ -13,27 +13,8 @@ export default function ChallengesPage() {
   const { challenges, loading, error, challengeCount } = useChallenges({ page, pageSize });
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [modalOpened, setModalOpened] = useState<boolean>(false);
-  const [solvedChallenges, setSolvedChallenges] = useState<Set<number>>(new Set());
 
   const pageCount = Math.ceil(challengeCount / pageSize);
-
-  // Load solved challenges from localStorage on component mount
-  useEffect(() => {
-    const saved = localStorage.getItem('solvedChallenges');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setSolvedChallenges(new Set(parsed));
-      } catch (error) {
-        console.error('Failed to parse solved challenges from localStorage:', error);
-      }
-    }
-  }, []);
-
-  // Save solved challenges to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('solvedChallenges', JSON.stringify(Array.from(solvedChallenges)));
-  }, [solvedChallenges]);
 
   const handleChallengeClick = (challenge: Challenge) => {
     setSelectedChallenge(challenge);
@@ -43,10 +24,6 @@ export default function ChallengesPage() {
   const handleModalClose = () => {
     setModalOpened(false);
     setSelectedChallenge(null);
-  };
-
-  const handleChallengeSolve = (challengeId: number, flag: string) => {
-    setSolvedChallenges((prev) => new Set(prev).add(challengeId));
   };
 
   return (
@@ -66,19 +43,14 @@ export default function ChallengesPage() {
       )}
 
       {!loading && !error && (
-        <ChallengeListView
-          challenges={challenges}
-          onChallengeClick={handleChallengeClick}
-          solvedChallenges={solvedChallenges}
-        />
+        <ChallengeListView challenges={challenges} onChallengeClick={handleChallengeClick} />
       )}
 
       <ChallengeModal
         challenge={selectedChallenge}
         opened={modalOpened}
         onClose={handleModalClose}
-        isSolved={selectedChallenge ? solvedChallenges.has(selectedChallenge.id) : false}
-        onSolve={handleChallengeSolve}
+        isSolved={selectedChallenge?.solved ?? false}
       />
     </Stack>
   );
