@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { MAX_CHALLENGE_PAGE_SIZE } from '@/config/constants';
-import { PrismaClient } from '@/generated/prisma';
+import { prisma } from '@/lib/prisma';
 import { Challenge } from '@/types/challenge';
 
 const schema = z.object({
@@ -15,16 +15,6 @@ const schema = z.object({
     })
     .default(18),
 });
-
-// use singleton if in development
-// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/nextjs-help#recommended-solution
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-export const prisma = globalForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
 
 export async function GET(req: NextRequest) {
   // INPUT VALIDATION ------------------------------------------------------------------------

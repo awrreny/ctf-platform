@@ -2,17 +2,7 @@ import argon2 from 'argon2';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
-import { PrismaClient } from '@/generated/prisma';
-
-// use singleton if in development
-// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/nextjs-help#recommended-solution
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-export const prisma = globalForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
+import { prisma } from '@/lib/prisma';
 
 const authSchema = z.object({
   username: z.string().min(2).max(100), // Can be username or email
