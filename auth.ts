@@ -60,7 +60,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // Return user object (NextAuth will handle the session)
           return {
-            id: user.id.toString(),
+            // id: user.id.toString(),
             name: user.username,
             email: user.email,
           };
