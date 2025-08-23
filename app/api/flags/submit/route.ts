@@ -73,11 +73,14 @@ export async function POST(req: NextRequest) {
 
   if (userId) {
     try {
+      // store plaintext flags if explicitly enabled
+      const shouldStoreFlags = (process.env.STORE_SUBMISSION_FLAGS || 'false') === 'true';
+
       await prisma.submission.create({
         data: {
           userId,
           challengeId,
-          flag,
+          flag: shouldStoreFlags ? flag : null, // Only store flag if env var is enabled
           isCorrect: isValid,
         },
       });
