@@ -28,7 +28,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   // const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const form = useForm<LoginFormData>({
