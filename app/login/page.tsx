@@ -29,7 +29,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  // const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const form = useForm<LoginFormData>({
     initialValues: {
@@ -51,7 +51,7 @@ export default function LoginPage() {
         username: values.username,
         password: values.password,
         redirect: false,
-        callbackUrl,
+        // callbackUrl,
       });
 
       if (result?.error) {
@@ -65,7 +65,7 @@ export default function LoginPage() {
           color: 'green',
         });
         // TODO use callback URLs with sanitization and validation, and make it work for /register as well
-        router.push(callbackUrl);
+        // router.push(callbackUrl);
         router.refresh();
       }
     } catch (err) {
