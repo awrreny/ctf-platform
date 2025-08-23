@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { auth } from '@/auth';
 import { MAX_CHALLENGE_PAGE_SIZE } from '@/config/constants';
 import { prisma } from '@/lib/prisma';
 import { Challenge } from '@/types/challenge';
@@ -17,6 +18,11 @@ const schema = z.object({
 });
 
 export async function GET(req: NextRequest) {
+  // AUTHENTICATION -----------------------------------------------------------------------
+  const session = await auth();
+  const currentUserId = session?.user?.id ? parseInt(session.user.id) : null;
+  // --------------------------------------------------------------------------------------
+
   // INPUT VALIDATION ------------------------------------------------------------------------
   const result = schema.safeParse({
     page: parseInt(req.nextUrl.searchParams.get('page') || '1', 10),
@@ -53,6 +59,22 @@ export async function GET(req: NextRequest) {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+
+    // Get solved challenges for the authenticated user
+    let solvedChallengeIds: Set<number> = new Set();
+    if (currentUserId) {
+      const solvedSubmissions = await prisma.submission.findMany({
+        where: {
+          userId: currentUserId,
+          isCorrect: true,
+        },
+        select: {
+          challengeId: true,
+        },
+        distinct: ['challengeId'],
+      });
+      solvedChallengeIds = new Set(solvedSubmissions.map((s) => s.challengeId));
+    }
     // ---------------------------------------------------------------------------------------
 
     // Map raw results to Challenge type, ensuring difficulty is cast correctly
@@ -60,6 +82,7 @@ export async function GET(req: NextRequest) {
       ...challenge,
       difficulty: challenge.difficulty as Challenge['difficulty'],
       attachments: challenge.attachments.map((attachment) => attachment.url),
+      solved: currentUserId ? solvedChallengeIds.has(challenge.id) : false,
     }));
 
     // including all pages, but not including filtered out challenges

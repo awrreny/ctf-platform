@@ -50,7 +50,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // Return user object (NextAuth will handle the session)
           return {
-            // id: user.id.toString(),
+            id: user.id.toString(),
             name: user.username,
             email: user.email,
           };
@@ -61,16 +61,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  // honestly no clue what is going on here
+  // something to do with nextauth's default user object having id as a string, but my id is a number in the db
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.dbId = user.id; // Store the database ID
       }
       return token;
     },
     async session({ session, token }) {
-      if (token.id) {
-        session.user.id = token.id as string;
+      if (token.dbId) {
+        session.user.id = token.dbId as string;
       }
       return session;
     },

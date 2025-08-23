@@ -7,4 +7,5 @@ export type Challenge = {
   points: number;
   solves: number;
   attachments: string[];
+  solved: boolean;
 };
