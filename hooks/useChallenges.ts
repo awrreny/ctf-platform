@@ -37,10 +37,19 @@ export function useChallenges({ page = 1, pageSize = 18 }: UseChallengesParams =
     fetchChallenges();
   }, [page, pageSize]);
 
+  const markChallengeAsSolved = (challengeId: number) => {
+    setChallenges((prevChallenges) =>
+      prevChallenges.map((challenge) =>
+        challenge.id === challengeId ? { ...challenge, solved: true } : challenge
+      )
+    );
+  };
+
   return {
     challenges,
     loading,
     error,
     challengeCount: total,
+    markChallengeAsSolved,
   };
 }

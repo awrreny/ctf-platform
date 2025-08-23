@@ -10,7 +10,10 @@ import { Challenge } from '@/types/challenge';
 export default function ChallengesPage() {
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(18);
-  const { challenges, loading, error, challengeCount } = useChallenges({ page, pageSize });
+  const { challenges, loading, error, challengeCount, markChallengeAsSolved } = useChallenges({
+    page,
+    pageSize,
+  });
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [modalOpened, setModalOpened] = useState<boolean>(false);
 
@@ -51,6 +54,7 @@ export default function ChallengesPage() {
         opened={modalOpened}
         onClose={handleModalClose}
         isSolved={selectedChallenge?.solved ?? false}
+        onSolve={markChallengeAsSolved}
       />
     </Stack>
   );
