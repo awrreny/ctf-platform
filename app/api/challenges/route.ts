@@ -50,7 +50,6 @@ export async function GET(req: NextRequest) {
         difficulty: true,
         description: true,
         points: true,
-        solves: true,
         attachments: { select: { url: true } },
       },
       orderBy: {
@@ -59,6 +58,27 @@ export async function GET(req: NextRequest) {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+
+    // Get challenge IDs for this page to calculate solves efficiently
+    const challengeIds = rawChallenges.map((challenge) => challenge.id);
+
+    // could refactor to remove js postprocessing but might require raw sql for COUNT DISTINCT
+    const solveCountsRaw = await prisma.submission.groupBy({
+      by: ['challengeId', 'userId'],
+      where: {
+        challengeId: { in: challengeIds },
+        isCorrect: true,
+      },
+      _count: {
+        userId: true,
+      },
+    });
+
+    const solveCountMap = new Map<number, number>();
+    for (const item of solveCountsRaw) {
+      const currentCount = solveCountMap.get(item.challengeId) || 0;
+      solveCountMap.set(item.challengeId, currentCount + 1);
+    }
 
     // Get solved challenges for the authenticated user
     let solvedChallengeIds: Set<number> = new Set();
@@ -82,6 +102,7 @@ export async function GET(req: NextRequest) {
       ...challenge,
       difficulty: challenge.difficulty as Challenge['difficulty'],
       attachments: challenge.attachments.map((attachment) => attachment.url),
+      solves: solveCountMap.get(challenge.id) || 0,
       solved: currentUserId ? solvedChallengeIds.has(challenge.id) : false,
     }));
 

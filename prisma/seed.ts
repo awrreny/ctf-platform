@@ -27,7 +27,6 @@ async function main() {
         difficulty: challenge.difficulty,
         description: challenge.description,
         points: challenge.points,
-        solves: challenge.solves,
         flagHash: hashFlag(challenge.flag),
         attachments: challenge.attachments || [],
       }));
@@ -46,7 +45,6 @@ async function main() {
         description:
           'The flag is flag{example_flag_12345}. This is a placeholder challenge: prisma/chal-seed-data.json was not found. Try copying prisma/chal-seed-data-example.json to prisma/chal-seed-data.json and editing it to add your own challenges.',
         points: 1,
-        solves: 1337,
         flagHash: hashFlag('flag{example_flag_12345}'),
         attachments: [],
       },
@@ -54,7 +52,8 @@ async function main() {
   }
 
   // Clear existing data
-  console.log('Clearing existing challenges and attachments...');
+  console.log('Clearing existing submissions, challenges and attachments...');
+  await prisma.submission.deleteMany();
   await prisma.attachment.deleteMany();
   await prisma.challenge.deleteMany();
 
@@ -62,14 +61,16 @@ async function main() {
   console.log(`Seeding ${challenges.length} challenge(s)...`);
   for (const challenge of challenges) {
     const { attachments, ...challengeData } = challenge;
-    
+
     const createdChallenge = await prisma.challenge.create({
       data: challengeData,
     });
 
     // Create attachments for this challenge
     if (attachments && attachments.length > 0) {
-      console.log(`Creating ${attachments.length} attachment(s) for challenge "${challenge.title}"...`);
+      console.log(
+        `Creating ${attachments.length} attachment(s) for challenge "${challenge.title}"...`
+      );
       for (const attachmentUrl of attachments) {
         await prisma.attachment.create({
           data: {

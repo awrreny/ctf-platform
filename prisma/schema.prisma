@@ -18,7 +18,6 @@ model Challenge {
   difficulty  String
   description String
   points      Int
-  solves      Int
   flagHash    String
 
   attachments Attachment[]
