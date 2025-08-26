@@ -73,6 +73,25 @@ export async function POST(req: NextRequest) {
 
   if (userId) {
     try {
+      // Check if user already has a correct submission for this challenge
+      if (isValid) {
+        const existingCorrectSubmission = await prisma.submission.findFirst({
+          where: {
+            userId,
+            challengeId,
+            isCorrect: true,
+          },
+        });
+
+        if (existingCorrectSubmission) {
+          // User already solved this challenge, don't create duplicate
+          return NextResponse.json({
+            isCorrect: true,
+            message: 'Challenge already solved',
+          });
+        }
+      }
+
       // store plaintext flags if explicitly enabled
       const shouldStoreFlags = (process.env.STORE_SUBMISSION_FLAGS || 'false') === 'true';
 
