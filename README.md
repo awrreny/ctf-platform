@@ -1,8 +1,11 @@
 # CTF platform
 
 Website for hosting my CTF challenges.
+
 WIP, no live server yet
+
 Uses Next.js with Mantine UI and Prisma ORM (currently with SQLite)
+
 Generated from [Next.js + Mantine template](https://github.com/mantinedev/next-app-template)
 
 ---
@@ -28,7 +31,7 @@ cd ctf-platform
 # 2. Install dependencies
 yarn
 
-# 3. Create environment file
+# 3. Create environment file (you will need to read through this and configure it to make it work)
 cp .env.example .env
 
 # 4. (Optional, to add your own challenges)
