@@ -62,22 +62,21 @@ export async function GET(req: NextRequest) {
     // Get challenge IDs for this page to calculate solves efficiently
     const challengeIds = rawChallenges.map((challenge) => challenge.id);
 
-    // could refactor to remove js postprocessing but might require raw sql for COUNT DISTINCT
+    // Count correct submissions per challenge assuming no duplicate correct solves by the same user
     const solveCountsRaw = await prisma.submission.groupBy({
-      by: ['challengeId', 'userId'],
+      by: ['challengeId'],
       where: {
         challengeId: { in: challengeIds },
         isCorrect: true,
       },
       _count: {
-        userId: true,
+        id: true,
       },
     });
 
     const solveCountMap = new Map<number, number>();
     for (const item of solveCountsRaw) {
-      const currentCount = solveCountMap.get(item.challengeId) || 0;
-      solveCountMap.set(item.challengeId, currentCount + 1);
+      solveCountMap.set(item.challengeId, item._count.id);
     }
 
     // Get solved challenges for the authenticated user
