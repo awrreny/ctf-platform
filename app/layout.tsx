@@ -9,8 +9,8 @@ import Header from '@/components/Header';
 import { theme } from '../theme';
 
 export const metadata = {
-  title: 'Mantine Next.js template',
-  description: 'I am using Mantine with Next.js!',
+  title: 'u-winCTF',
+  description: 'ctf website by awr',
 };
 
 export default function RootLayout({ children }: { children: any }) {

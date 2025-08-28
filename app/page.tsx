@@ -15,7 +15,7 @@ export default function HomePage() {
         Unnamed Website thats Interesting and Nice
       </Text>
       <Text mt={30} size="lg">
-        A personal collection of CTF challenges - mainly in cryptography and reverse engineering.
+        A personal collection of CTF challenges - mainly in cryptography.
       </Text>
       <ColorSchemeToggle />
     </Stack>
