@@ -16,15 +16,5 @@
     "difficulty": "Expert",
     "solves": 1,
     "flag": "flag{dont_publish_your_flags_in_public_repositories}"
-  },
-  {
-    "title": "Attachment Example",
-    "category": "forensics",
-    "description": "To add attachments to files, place the files in public/nocommit/challenges/ and reference them in the challenge JSON. \nThe directory /nocommit/challenges can be configured in /config/constants.ts. \n\nTry adding a chal.txt in the correct directory. The flag is the correct directory path.",
-    "points": 100,
-    "difficulty": "Medium",
-    "solves": 10,
-    "flag": "flag{public/nocommit/challenges/attach_example/chal.txt}",
-    "attachments": ["attach_example/chal.txt"]
   }
 ]
