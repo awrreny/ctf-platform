@@ -38,6 +38,8 @@ cp .env.example .env
 cp prisma/chal-seed-data-example.json prisma/chal-seed-data.json
 
 # 5. Initialise database (make sure you are still in ctf-platform/)
+yarn prisma generate
+# change 'dev' to 'deploy' if in production
 yarn prisma migrate dev
 yarn prisma db seed
 
