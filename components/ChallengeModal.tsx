@@ -15,7 +15,7 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { CHALLENGE_ATTACHMENT_DIR } from '@/config/constants';
+import { CHALLENGE_ATTACHMENT_SITE } from '@/config/constants';
 import { useFlagValidation } from '@/hooks/useFlagValidation';
 import { Challenge } from '@/types/challenge';
 
@@ -120,8 +120,10 @@ export default function ChallengeModal({
                       color="blue"
                       size="xs"
                       component="a"
-                      href={`${CHALLENGE_ATTACHMENT_DIR}/${attachment}`}
+                      href={`${CHALLENGE_ATTACHMENT_SITE}${attachment}`}
                       download
+                      target="_blank"
+                      rel="noopener noreferrer"
                       rightSection={<IconExternalLink size={12} />}
                     >
                       Download
